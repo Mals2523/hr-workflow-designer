@@ -54,7 +54,7 @@ export default function WorkflowCanvas() {
     setValidationErrors,
   } = useWorkflowStore();
 
-  // ✅ VALIDATION EFFECT
+  //  VALIDATION 
   useEffect(() => {
     const result = validateWorkflow(nodes, edges);
 
@@ -125,6 +125,9 @@ export default function WorkflowCanvas() {
         }}
         fitView
         className="bg-gray-50"
+        deleteKeyCode="Delete"
+        defaultNodes={[]}
+        defaultEdges={[]}
       >
         <MiniMap nodeBorderRadius={2} />
         <Controls />

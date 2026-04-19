@@ -71,7 +71,9 @@ export const handlers = [
     const steps: SimulationStep[] = nodes.map((node) => ({
       nodeId: node.id,
       nodeType: (node.type as SimulationStep['nodeType']) ?? 'task',
-      title: (node.data?.label as string) ?? 'Untitled Step',
+      title: (node.data?.title as string) ?? 
+       (node.data?.label as string) ?? 
+       'Untitled Step',
       status: 'success',
       message: getMessageForNode(node),
       timestamp: Date.now(),
