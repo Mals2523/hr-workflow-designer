@@ -4,7 +4,7 @@ type Props = {
 };
 
 const StartForm = ({ data, onChange }: Props) => {
-  const metadata = data.metadata || [];
+  const metadata = Array.isArray(data.metadata) ? data.metadata : [];
 
   const updateMeta = (index: number, key: string, value: string) => {
     const updated = [...metadata];
