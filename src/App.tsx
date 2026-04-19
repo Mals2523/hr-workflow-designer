@@ -1,6 +1,7 @@
 import WorkflowCanvas from './components/canvas/WorkflowCanvas';
 import NodeSidebar from './components/sidebar/NodeSidebar';
 import NodeFormPanel from './components/forms/NodeFormPanel';
+import SimulationPanel from './components/sandbox/SimulationPanel';
 
 function App() {
   return (
@@ -13,8 +14,13 @@ function App() {
         <WorkflowCanvas />
       </div>
 
-      {/* Right Panel */}
-      <NodeFormPanel />
+      {/* Right column — forms + simulation */}
+      <div className="flex flex-col w-80 border-l bg-white">
+        <div className="flex-1 overflow-y-auto">
+          <NodeFormPanel />
+        </div>
+        <SimulationPanel />
+      </div>
     </div>
   );
 }
