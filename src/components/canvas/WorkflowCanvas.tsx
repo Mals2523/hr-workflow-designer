@@ -1,71 +1,70 @@
-import { useCallback, DragEvent, MouseEvent as ReactMouseEvent } from 'react';
+import { useCallback, useRef } from 'react';
 import ReactFlow, {
   MiniMap,
   Controls,
   Background,
-  addEdge,
-  type Connection,
-  type Edge,
   BackgroundVariant,
   type Node,
+  type ReactFlowInstance,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { useWorkflowStore } from '../../store/workflowStore';
 import { nodeTypes } from '../nodes';
+const defaultData: Record<string, object> = {
+  start:     { type: 'start', title: 'Start', metadata: {} },
+  task:      { type: 'task', title: 'New Task', description: '', assignee: '', dueDate: '', customFields: {} },
+  approval:  { type: 'approval', title: 'Approval', approverRole: 'Manager', autoApproveThreshold: 0 },
+  automated: { type: 'automated', title: 'Automated Step', actionId: '', actionParams: {} },
+  end:       { type: 'end', endMessage: 'Done', showSummary: false },
+};
 
 export default function WorkflowCanvas() {
+  const reactFlowWrapper = useRef<HTMLDivElement>(null);
+  const reactFlowInstance = useRef<ReactFlowInstance | null>(null);
+
   const {
     nodes,
     edges,
     onNodesChange,
     onEdgesChange,
-    setEdges,
-    setSelectedNode,
+    onConnect,
+    setSelectedNodeId,
     addNode,
   } = useWorkflowStore();
 
-  const onConnect = useCallback(
-    (params: Edge | Connection) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges],
-  );
-
   const onNodeClick = useCallback(
-    (_: ReactMouseEvent, node: Node) => {
-      setSelectedNode(node.id);
+    (_: React.MouseEvent, node: Node) => {
+      setSelectedNodeId(node.id);
     },
-    [setSelectedNode],
+    [setSelectedNodeId],
   );
 
   const onPaneClick = useCallback(() => {
-    setSelectedNode(null);
-  }, [setSelectedNode]);
+    setSelectedNodeId(null);
+  }, [setSelectedNodeId]);
 
-  const onDragOver = useCallback((event: DragEvent<HTMLDivElement>) => {
+  const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
   const onDrop = useCallback(
-    (event: DragEvent<HTMLDivElement>) => {
+    (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
-
       const type = event.dataTransfer.getData('application/reactflow');
-      if (typeof type === 'undefined' || !type) {
-        return;
-      }
+      if (!type || !reactFlowInstance.current || !reactFlowWrapper.current) return;
 
-      // Note: We use clientX/clientY for a placeholder position for now
-      // It should ideally be translated using reactFlowInstance.screenToFlowPosition
-      const position = {
+      // Correctly convert screen coordinates to flow coordinates
+      const position = reactFlowInstance.current.screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,
-      };
+      });
 
       const newNode: Node = {
         id: crypto.randomUUID(),
         type,
         position,
-        data: { label: `${type} node` },
+        data: defaultData[type] ?? { label: type },
       };
 
       addNode(newNode);
@@ -74,7 +73,7 @@ export default function WorkflowCanvas() {
   );
 
   return (
-    <div className="w-full h-full">
+    <div ref={reactFlowWrapper} className="w-full h-full">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -86,23 +85,18 @@ export default function WorkflowCanvas() {
         onPaneClick={onPaneClick}
         onDragOver={onDragOver}
         onDrop={onDrop}
+        onInit={(instance) => { reactFlowInstance.current = instance; }}
         fitView
-        className="bg-gray-950"
+        className="bg-gray-50"
       >
-        <MiniMap
-          nodeStrokeColor={(n) => {
-            if (n.type === 'input') return '#0041d0';
-            if (n.type === 'output') return '#ff0072';
-            return '#1a192b';
-          }}
-          nodeColor={(n) => {
-            if (n.type === 'input') return '#0041d0';
-            return '#fff';
-          }}
-          nodeBorderRadius={2}
-        />
+        <MiniMap nodeBorderRadius={2} />
         <Controls />
-        <Background variant={BackgroundVariant.Dots} gap={12} size={1} color="#4b5563" />
+        <Background
+          variant={BackgroundVariant.Dots}
+          gap={12}
+          size={1}
+          color="#d1d5db"
+        />
       </ReactFlow>
     </div>
   );
