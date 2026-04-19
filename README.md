@@ -64,7 +64,7 @@ After dropping a node, the sidebar suggests what comes next based on HR workflow
 - ✅ Dynamic forms with registry pattern
 - ✅ MSW mock API — `/automations` and `/simulate`
 - ✅ Simulation with step-by-step execution log
-- ✅ Graph validation + visual error badges on nodes
+- ✅ Graph validation 
 - ✅ DFS cycle detection
 - ✅ Smart node suggestions
 - ✅ Export / Import JSON
