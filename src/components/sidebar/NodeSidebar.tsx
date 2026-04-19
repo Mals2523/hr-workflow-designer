@@ -1,0 +1,88 @@
+import { Play, User, Check, Settings, Square } from "lucide-react";
+
+type NodeTypeItem = {
+  type: string;
+  label: string;
+  icon: React.ReactNode;
+  bg: string;
+  border: string;
+  text: string;
+};
+
+const nodeItems: NodeTypeItem[] = [
+  {
+    type: "start",
+    label: "Start",
+    icon: <Play size={16} />,
+    bg: "bg-green-100",
+    border: "border-green-300",
+    text: "text-green-800",
+  },
+  {
+    type: "task",
+    label: "Task",
+    icon: <User size={16} />,
+    bg: "bg-blue-100",
+    border: "border-blue-300",
+    text: "text-blue-800",
+  },
+  {
+    type: "approval",
+    label: "Approval",
+    icon: <Check size={16} />,
+    bg: "bg-orange-100",
+    border: "border-orange-300",
+    text: "text-orange-800",
+  },
+  {
+    type: "automated",
+    label: "Automated",
+    icon: <Settings size={16} />,
+    bg: "bg-purple-100",
+    border: "border-purple-300",
+    text: "text-purple-800",
+  },
+  {
+    type: "end",
+    label: "End",
+    icon: <Square size={16} />,
+    bg: "bg-red-100",
+    border: "border-red-300",
+    text: "text-red-800",
+  },
+];
+
+const NodeSidebar = () => {
+  const onDragStart = (event: React.DragEvent, nodeType: string) => {
+    event.dataTransfer.setData("application/reactflow", nodeType);
+    event.dataTransfer.effectAllowed = "move";
+  };
+
+  return (
+    <aside className="w-56 bg-white border-r p-3">
+      <h2 className="text-sm font-semibold text-gray-700 mb-3">
+        Nodes
+      </h2>
+
+      <div className="flex flex-col gap-2">
+        {nodeItems.map((item) => (
+          <div
+            key={item.type}
+            draggable
+            onDragStart={(e) => onDragStart(e, item.type)}
+            className={`flex items-center gap-2 p-2 rounded-md cursor-grab active:cursor-grabbing
+            border ${item.bg} ${item.border} ${item.text}
+            hover:shadow-sm transition`}
+          >
+            {item.icon}
+            <span className="text-sm font-medium">
+              {item.label}
+            </span>
+          </div>
+        ))}
+      </div>
+    </aside>
+  );
+};
+
+export default NodeSidebar;
