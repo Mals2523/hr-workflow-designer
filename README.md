@@ -69,6 +69,7 @@ After dropping a node, the sidebar suggests what comes next based on HR workflow
 - ✅ Smart node suggestions
 - ✅ Export / Import JSON
 - ✅ MiniMap, zoom, drag and drop
+- ✅ Visual error badges mapped directly to invalid nodes on canvas
 
 ## Would Add With More Time
 
