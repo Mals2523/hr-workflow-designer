@@ -1,5 +1,6 @@
 import WorkflowCanvas from './components/canvas/WorkflowCanvas';
 import NodeSidebar from './components/sidebar/NodeSidebar';
+import NodeFormPanel from './components/forms/NodeFormPanel';
 
 function App() {
   return (
@@ -11,6 +12,9 @@ function App() {
       <div className="flex-1 h-full">
         <WorkflowCanvas />
       </div>
+
+      {/* Right Panel */}
+      <NodeFormPanel />
     </div>
   );
 }
